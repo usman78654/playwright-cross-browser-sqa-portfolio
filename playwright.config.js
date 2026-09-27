@@ -1,6 +1,7 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 const externalBaseUrl = process.env.BASE_URL;
+const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -35,7 +36,7 @@ module.exports = defineConfig({
   webServer: externalBaseUrl
     ? undefined
     : {
-        command: 'npm.cmd run app:start',
+        command: `${npmCommand} run app:start`,
         url: 'http://127.0.0.1:3000',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,
