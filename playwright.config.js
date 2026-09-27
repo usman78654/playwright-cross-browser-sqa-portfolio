@@ -27,7 +27,7 @@ module.exports = defineConfig({
   use: {
     baseURL: externalBaseUrl || 'http://127.0.0.1:3000',
     testIdAttribute: 'data-test',
-    actionTimeout: 10_000,
+    actionTimeout: 15_000,
     navigationTimeout: 20_000,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

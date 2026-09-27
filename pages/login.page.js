@@ -9,6 +9,7 @@ class LoginPage {
 
   async open() {
     await this.page.goto('/');
+    await this.username.waitFor({ state: 'visible' });
   }
 
   async login(user) {
