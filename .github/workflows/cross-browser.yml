@@ -64,3 +64,27 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 14
+
+  visual-windows:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.9.0
+          cache: npm
+      - run: npm ci
+      - run: npm --prefix application-under-test ci
+      - run: npx playwright install chromium
+      - run: npx playwright test tests/visual --project=chromium-desktop
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-visual-windows
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

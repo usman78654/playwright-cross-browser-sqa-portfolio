@@ -29,6 +29,7 @@ test('TC-NET-001 UI remains operable when images load slowly', async ({ loginPag
 test('TC-LINK-001 links expose valid destinations or accessible SPA actions', async ({ loginPage, page }) => {
   await loginPage.open();
   await loginPage.login(users.standard);
+  await expect(page.getByTestId('inventory-list')).toBeVisible();
   const links = await page.locator('a[href]').evaluateAll((anchors) =>
     anchors.map((anchor) => ({
       href: anchor.getAttribute('href'),
