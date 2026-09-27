@@ -1,0 +1,9 @@
+services:
+  quality-suite:
+    build: .
+    environment:
+      CI: "true"
+    volumes:
+      - ./playwright-report:/work/playwright-report
+      - ./test-results:/work/test-results
+    command: npm test -- --project=chromium-desktop --project=firefox-desktop

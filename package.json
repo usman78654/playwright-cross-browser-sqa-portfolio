@@ -1,0 +1,36 @@
+{
+  "name": "cross-browser-responsive-sqa-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cross-browser, responsive, accessibility, and resilience testing portfolio for Swag Labs",
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:critical": "playwright test --grep @critical",
+    "test:known-defects": "playwright test tests/defects",
+    "test:session": "playwright test tests/session",
+    "test:performance": "playwright test tests/performance",
+    "test:network": "playwright test tests/resilience --grep @network",
+    "test:functional": "playwright test tests/functional",
+    "test:responsive": "playwright test tests/responsive",
+    "test:a11y": "playwright test tests/accessibility",
+    "test:resilience": "playwright test tests/resilience",
+    "test:visual": "playwright test tests/visual",
+    "test:edge": "playwright test --project=edge-desktop",
+    "test:headed": "playwright test --headed --project=chromium-desktop",
+    "test:debug": "playwright test --debug --project=chromium-desktop",
+    "test:flaky": "playwright test --grep @critical --repeat-each=10 --project=chromium-desktop",
+    "dashboard": "node scripts/generate-dashboard.js",
+    "report": "playwright show-report",
+    "install:browsers": "playwright install chromium firefox webkit",
+    "app:install": "npm --prefix application-under-test install",
+    "app:start": "npm --prefix application-under-test run start -- --host 0.0.0.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@playwright/test": "^1.55.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

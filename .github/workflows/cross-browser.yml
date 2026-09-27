@@ -1,0 +1,66 @@
+name: Cross-browser quality gate
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+jobs:
+  chromium-firefox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - chromium-desktop
+          - firefox-desktop
+          - tablet-chromium
+          - mobile-chromium
+          - mobile-firefox
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.9.0
+          cache: npm
+      - run: npm ci
+      - run: npm --prefix application-under-test ci
+      - run: npx playwright install --with-deps chromium firefox
+      - run: npx playwright test --project=${{ matrix.project }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.project }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  edge:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.9.0
+          cache: npm
+      - run: npm ci
+      - run: npm --prefix application-under-test ci
+      - run: npx playwright install msedge
+      - run: npx playwright test --project=edge-desktop
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-edge-desktop
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

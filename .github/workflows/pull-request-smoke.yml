@@ -1,0 +1,28 @@
+name: Pull request smoke gate
+
+on:
+  pull_request:
+
+jobs:
+  critical-path:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.9.0
+          cache: npm
+      - run: npm ci
+      - run: npm --prefix application-under-test ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:smoke -- --project=chromium-desktop
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pull-request-smoke-report
+          path: |
+            playwright-report/
+            test-results/

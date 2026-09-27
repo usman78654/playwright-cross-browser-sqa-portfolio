@@ -1,0 +1,43 @@
+name: Publish QA report
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  test-and-publish:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.9.0
+          cache: npm
+      - run: npm ci
+      - run: npm --prefix application-under-test ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --project=chromium-desktop
+      - if: always()
+        uses: actions/configure-pages@v5
+      - if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: playwright-report
+      - if: always()
+        id: deployment
+        uses: actions/deploy-pages@v4
